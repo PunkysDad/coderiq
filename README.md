@@ -10,22 +10,37 @@ CoderIQ is a developer tool that scans source code files and generates a live in
 
 ## Setup
 
-### 1. Install dependencies
+### 1. Install Python 3.12+
+```bash
+brew install python@3.12  # macOS — or use your preferred method
+```
+
+### 2. Create and activate a virtual environment
+```bash
+python3.12 -m venv .venv
+source .venv/bin/activate  # macOS/Linux
+# .venv\Scripts\activate   # Windows
+```
+
+### 3. Install dependencies
 ```bash
 pip install -r requirements.txt
 ```
 
-### 2. Set your Anthropic API key
+### 4. Set your Anthropic API key
 ```bash
 export ANTHROPIC_API_KEY=sk-ant-...
 ```
 
-### 3. Register the MCP server with Claude Code
+### 5. Register the MCP server with Claude Code
 ```bash
-claude mcp add coderiq -- python /path/to/coderiq/mcp_server/server.py
+claude mcp add coderiq -- /path/to/coderiq/.venv/bin/python /path/to/coderiq/mcp_server/server.py
 ```
 
-### 4. Start the React app
+> Replace /path/to/coderiq with the absolute path to your coderiq project folder.
+> Tip: run `pwd` from inside the coderiq directory to get the full path.
+
+### 6. Start the React app
 ```bash
 cd react_app && npm install && npm start
 ```
