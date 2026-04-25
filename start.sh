@@ -3,7 +3,7 @@
 # Starts the API server and the React dev server
 
 echo "Starting CoderIQ API server on http://localhost:4000"
-python3 api_server/server.py &
+.venv/bin/python api_server/server.py &
 API_PID=$!
 
 echo "Starting CoderIQ React app on http://localhost:5173"
