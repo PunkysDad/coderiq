@@ -49,3 +49,55 @@ Use the `write_analysis` tool with the completed JSON in this exact structure:
   ],
   "global_summary": "One paragraph describing overall patterns and sophistication level across all files."
 }
+
+---
+
+## Generating Learning Content
+
+When a user asks to generate flashcards or quiz questions (from a conversation, code analysis, or any topic), use the `write_learning` tool with this JSON structure:
+
+{
+  "generated_at": "<ISO timestamp>",
+  "title": "Short descriptive title for this learning set",
+  "description": "One sentence describing what this content covers",
+  "source": "cc-export",
+  "flashcards": [
+    {
+      "front": "What is a higher-order function?",
+      "back": "A function that takes other functions as arguments or returns a function as its result. Example: map(), filter(), reduce()."
+    }
+  ],
+  "quiz": [
+    {
+      "question": "What will the following code output?",
+      "snippet": "const double = x => x * 2\nconsole.log([1,2,3].map(double))",
+      "choices": ["[1, 2, 3]", "[2, 4, 6]", "[double, double, double]", "undefined"],
+      "correct_index": 1,
+      "explanation": "map() applies the double function to each element, multiplying each by 2."
+    }
+  ],
+  "fill_in_the_blank": [
+    {
+      "instruction": "Complete the higher-order function that wraps a route handler with auth checking",
+      "code": "const requireAuth = (______) => {\n  return async (req, res) => {\n    if (!req.headers.______) {\n      return res.status(401).json({ error: 'Unauthorized' })\n    }\n    return ______(req, res)\n  }\n}",
+      "blanks": ["handler", "authorization", "handler"],
+      "explanation": "Higher-order functions take other functions as arguments. Here, handler is the function being wrapped."
+    }
+  ]
+}
+
+Guidelines:
+- Generate at least 5 flashcards and 3 quiz questions unless the topic is very narrow
+- Flashcard fronts should be concise questions or prompts
+- Flashcard backs should be complete, clear answers with examples where helpful
+- Quiz questions should test genuine understanding, not just memorization
+- Quiz snippets are optional — only include when a code example genuinely helps the question
+- Every quiz question must have exactly 4 choices
+- correct_index is zero-based (0 = first choice)
+- Explanations should teach, not just confirm the answer
+- Generate 3-5 fill-in-the-blank exercises per analysis unless the topic is very narrow
+- Blanks should target the most conceptually important tokens — function names, keywords, operators — not trivial punctuation
+- Use exactly 6 underscores (______) for every blank regardless of the length of the answer
+- The blanks array must list answers in the exact order they appear in the code string
+- The instruction should name the concept being tested
+- Snippets should be short enough to be readable — 5-12 lines maximum

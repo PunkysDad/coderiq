@@ -11,7 +11,9 @@ from pathlib import Path
 
 from mcp.server.fastmcp import FastMCP
 
-ANALYSIS_PATH = Path(__file__).resolve().parent.parent / "analysis.json"
+PROJECT_ROOT = Path(__file__).resolve().parent.parent
+ANALYSIS_PATH = PROJECT_ROOT / "analysis.json"
+LEARNING_PATH = PROJECT_ROOT / "learning.json"
 
 mcp = FastMCP("coderiq")
 
@@ -66,6 +68,38 @@ def write_analysis(analysis: str) -> str:
         f"CoderIQ analysis written. {file_count} files, "
         f"{concept_count} concepts identified. "
         f"Report updated at localhost:5173."
+    )
+
+
+@mcp.tool()
+def write_learning(learning: str) -> str:
+    """Write flashcards and/or quiz questions to the CoderIQ learning center. Call this after generating learning content from a conversation or code analysis."""
+    try:
+        data = json.loads(learning)
+    except json.JSONDecodeError as e:
+        return f"CoderIQ error: invalid JSON — {e}"
+
+    if not isinstance(data, dict):
+        return "CoderIQ error: learning content must be a JSON object."
+
+    if not any(k in data for k in ("flashcards", "quiz", "fill_in_the_blank")):
+        return "Error: learning JSON must contain at least one of: flashcards, quiz, fill_in_the_blank"
+
+    if not data.get("generated_at"):
+        data["generated_at"] = datetime.now(timezone.utc).isoformat()
+    if not data.get("source"):
+        data["source"] = "cc-export"
+
+    try:
+        LEARNING_PATH.write_text(json.dumps(data, indent=2), encoding="utf-8")
+    except OSError as e:
+        return f"CoderIQ error: failed to write learning.json — {e}"
+
+    flashcard_count = len(data.get("flashcards") or [])
+    quiz_count = len(data.get("quiz") or [])
+    return (
+        f"CoderIQ learning content written. {flashcard_count} flashcards, "
+        f"{quiz_count} quiz questions ready at localhost:5173."
     )
 
 
