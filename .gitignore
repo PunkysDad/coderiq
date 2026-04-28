@@ -15,3 +15,4 @@ build/
 # Runtime output
 analysis.json
 learning.json
+api_server/coderiq.db
