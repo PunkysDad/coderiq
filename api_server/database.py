@@ -27,12 +27,14 @@ def init_db():
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             session_id INTEGER NOT NULL,
             filename TEXT NOT NULL,
+            language TEXT,
             name TEXT NOT NULL,
             category TEXT,
             difficulty TEXT,
             what TEXT,
             why TEXT,
             snippet TEXT,
+            highlight_lines TEXT,
             FOREIGN KEY (session_id) REFERENCES sessions(id)
         );
 
@@ -83,6 +85,13 @@ def init_db():
             content_types TEXT
         );
     """)
+
+    # Migrate existing DB — add columns if they don't exist
+    for col, definition in [("language", "TEXT"), ("highlight_lines", "TEXT")]:
+        try:
+            cur.execute(f"ALTER TABLE concepts ADD COLUMN {col} {definition}")
+        except sqlite3.OperationalError:
+            pass  # column already exists
 
     conn.commit()
     conn.close()
