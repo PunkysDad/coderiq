@@ -44,13 +44,7 @@ pip install -r requirements.txt
 cd react_app && npm install && cd ..
 ```
 
-### 5. Set your Anthropic API key
-
-```bash
-export ANTHROPIC_API_KEY=sk-ant-...
-```
-
-### 6. Register the MCP server with Claude Code
+### 5. Register the MCP server with Claude Code
 
 ```bash
 claude mcp add coderiq -- /path/to/coderiq/.venv/bin/python /path/to/coderiq/mcp_server/server.py
@@ -59,7 +53,7 @@ claude mcp add coderiq -- /path/to/coderiq/.venv/bin/python /path/to/coderiq/mcp
 Replace /path/to/coderiq with the absolute path to your coderiq project folder.
 Run pwd from inside the coderiq directory to get the full path.
 
-### 7. Start CoderIQ
+### 6. Start CoderIQ
 
 ```bash
 ./start.sh
