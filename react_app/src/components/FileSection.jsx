@@ -26,7 +26,7 @@ export default function FileSection({ file }) {
       </header>
       <div className="space-y-3">
         {concepts.map((c, i) => (
-          <ConceptCard key={`${c.name}-${i}`} concept={c} />
+          <ConceptCard key={`${c.name}-${i}`} concept={c} language={file.language} />
         ))}
       </div>
     </section>

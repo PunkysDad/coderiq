@@ -1,6 +1,12 @@
 import { useState } from 'react'
 import Prism from 'prismjs'
 import 'prismjs/components/prism-javascript'
+import 'prismjs/components/prism-typescript'
+import 'prismjs/components/prism-python'
+import 'prismjs/components/prism-bash'
+import 'prismjs/components/prism-json'
+import 'prismjs/components/prism-css'
+import 'prismjs/components/prism-sql'
 
 const DIFFICULTY_STYLES = {
   Beginner: 'bg-green-500/15 text-green-300 border-green-500/30',
@@ -11,19 +17,27 @@ const DIFFICULTY_STYLES = {
 const CATEGORY_STYLES =
   'bg-slate-500/15 text-slate-300 border-slate-500/30'
 
-export default function ConceptCard({ concept }) {
+const PRISM_LANG_MAP = {
+  JavaScript: ['javascript', Prism.languages.javascript],
+  TypeScript: ['typescript', Prism.languages.typescript],
+  Python: ['python', Prism.languages.python],
+  Bash: ['bash', Prism.languages.bash],
+  JSON: ['json', Prism.languages.json],
+  CSS: ['css', Prism.languages.css],
+  SQL: ['sql', Prism.languages.sql],
+}
+
+export default function ConceptCard({ concept, language }) {
   const [open, setOpen] = useState(false)
 
   const difficultyClass =
     DIFFICULTY_STYLES[concept.difficulty] ?? CATEGORY_STYLES
 
-  const highlighted = concept.snippet
-    ? Prism.highlight(
-        concept.snippet,
-        Prism.languages.javascript,
-        'javascript',
-      )
-    : ''
+  const [prismLangKey, prismLang] =
+    PRISM_LANG_MAP[language] ?? ['javascript', Prism.languages.javascript]
+
+  const highlightSet = new Set(concept.highlight_lines ?? [])
+  const lines = concept.snippet ? concept.snippet.split('\n') : []
 
   return (
     <div className="rounded-xl border border-gray-800 bg-gray-900/60 overflow-hidden">
@@ -69,11 +83,25 @@ export default function ConceptCard({ concept }) {
               <div className="text-[11px] uppercase tracking-wider text-gray-500 font-semibold mb-2">
                 Snippet
               </div>
-              <pre className="language-javascript text-sm overflow-x-auto">
-                <code
-                  className="language-javascript"
-                  dangerouslySetInnerHTML={{ __html: highlighted }}
-                />
+              <pre className={`language-${prismLangKey} text-sm overflow-x-auto py-2`}>
+                <code className={`language-${prismLangKey}`}>
+                  {lines.map((line, i) => {
+                    const html =
+                      Prism.highlight(line, prismLang, prismLangKey) || ' '
+                    const isHighlighted = highlightSet.has(i + 1)
+                    return (
+                      <span
+                        key={i}
+                        className={
+                          isHighlighted
+                            ? 'block px-4 bg-yellow-400/10 border-l-2 border-yellow-400'
+                            : 'block px-4'
+                        }
+                        dangerouslySetInnerHTML={{ __html: html }}
+                      />
+                    )
+                  })}
+                </code>
               </pre>
             </div>
           )}

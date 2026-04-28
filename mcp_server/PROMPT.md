@@ -21,9 +21,10 @@ For each concept provide:
 - name: the concept name
 - category: exactly one of "Paradigm", "Pattern", "OOP", "Algorithm", "Data Structure", "Language Feature", "Architecture", "Principle"
 - difficulty: exactly one of "Beginner", "Intermediate", "Advanced"
-- what: a beginner-friendly explanation of what the concept IS (1-2 sentences)
-- why: why THIS code is using it and what problem it solves (1-2 sentences)
-- snippet: a short representative code snippet from the file showing the concept (3-10 lines)
+- what: A beginner-friendly explanation of what the concept IS and how it works mechanically. Go beyond a definition — explain what happens under the hood. 2-4 sentences.
+- why: Why THIS specific code uses it, what problem it solves, and what the key line(s) are actually doing. Be specific to the code, not generic. 2-3 sentences.
+- snippet: A short representative code snippet from the file showing the concept (3-10 lines)
+- highlight_lines: An array of 1-based line numbers within the snippet that are the most important lines — the ones that directly implement or demonstrate the concept. Usually 1-3 lines. Example: [1] if the first line is the key one.
 
 ## Step 3 — Write the analysis
 Use the `write_analysis` tool with the completed JSON in this exact structure:
@@ -40,9 +41,10 @@ Use the `write_analysis` tool with the completed JSON in this exact structure:
           "name": "Higher-Order Functions",
           "category": "Paradigm",
           "difficulty": "Intermediate",
-          "what": "A higher-order function takes other functions as arguments or returns a function as its result.",
-          "why": "Used here to wrap route handlers with auth checks, keeping concerns separated.",
-          "snippet": "const requireAuth = (handler) => {\n  return async (req, res) => {\n    return handler(req, res)\n  }\n}"
+          "what": "A higher-order function takes other functions as arguments or returns a function. When called, it doesn't execute the inner logic immediately — it returns a new function that closes over the argument, deferring execution until the returned function is invoked.",
+          "why": "requireAuth wraps any route handler with an auth check without modifying the handler itself. Line 1 accepts the handler as an argument; line 2 returns a new async function that runs the check first, then calls the original handler — keeping auth logic in one place.",
+          "snippet": "const requireAuth = (handler) => {\n  return async (req, res) => {\n    return handler(req, res)\n  }\n}",
+          "highlight_lines": [1]
         }
       ]
     }
