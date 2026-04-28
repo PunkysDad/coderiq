@@ -130,7 +130,18 @@ function adaptSession(session) {
   const filesMap = new Map()
   for (const c of session.concepts ?? []) {
     if (!filesMap.has(c.filename)) {
-      filesMap.set(c.filename, { filename: c.filename, concepts: [] })
+      filesMap.set(c.filename, {
+        filename: c.filename,
+        language: c.language ?? '',
+        concepts: [],
+      })
+    }
+    let highlightLines = []
+    try {
+      const parsed = JSON.parse(c.highlight_lines ?? '[]')
+      if (Array.isArray(parsed)) highlightLines = parsed
+    } catch {
+      // malformed JSON — treat as no highlights
     }
     filesMap.get(c.filename).concepts.push({
       name: c.name,
@@ -139,6 +150,7 @@ function adaptSession(session) {
       what: c.what,
       why: c.why,
       snippet: c.snippet,
+      highlight_lines: highlightLines,
     })
   }
 

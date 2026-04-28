@@ -59,21 +59,25 @@ def _persist_analysis(data: dict) -> int:
         concept_rows = []
         for f in files:
             filename = f.get("filename", "")
+            language = f.get("language", "")
             for c in f.get("concepts") or []:
                 concept_rows.append((
                     session_id,
                     filename,
+                    language,
                     c.get("name", ""),
                     c.get("category"),
                     c.get("difficulty"),
                     c.get("what"),
                     c.get("why"),
                     c.get("snippet"),
+                    json.dumps(c.get("highlight_lines") or []),
                 ))
         if concept_rows:
             cur.executemany(
-                "INSERT INTO concepts (session_id, filename, name, category, difficulty, what, why, snippet)"
-                " VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+                "INSERT INTO concepts"
+                " (session_id, filename, language, name, category, difficulty, what, why, snippet, highlight_lines)"
+                " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
                 concept_rows,
             )
         conn.commit()
